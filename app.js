@@ -321,7 +321,11 @@
     try {
       setStatus("fetching latest reading…");
       const rawRows = await fetchRows();
-      const rows = normalizeRows(rawRows);
+      let rows = normalizeRows(rawRows);
+
+      if (cfg.maxDataPoints && rows.length > cfg.maxDataPoints) {
+        rows = rows.slice(-cfg.maxDataPoints);
+      }
 
       if (!rows.length) {
         setChartState(
