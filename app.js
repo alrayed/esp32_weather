@@ -13,6 +13,16 @@
   const refreshLine = document.getElementById("refreshLine");
   const liveDot = document.getElementById("liveDot");
   const canvas = document.getElementById("chart");
+  const conditionCard = document.getElementById("conditionCard");
+  const conditionImg = document.getElementById("conditionImg");
+  const conditionLabel = document.getElementById("conditionLabel");
+  const conditionValue = document.getElementById("conditionValue");
+
+  if (cfg.condition && conditionLabel) {
+    conditionLabel.textContent = cfg.condition.label || "Forecast";
+  } else if (conditionCard) {
+    conditionCard.classList.add("hidden");
+  }
 
   let chart = null;
   const hidden = new Set(); // series keys currently toggled off
@@ -170,6 +180,10 @@
           const v = parseFloat(String(row[s.index] ?? "").replace(/,/g, ""));
           out[s.key] = isNaN(v) ? null : v;
         });
+        if (cfg.condition) {
+          const raw = row[cfg.condition.index];
+          out.prediction = raw === undefined || raw === null ? null : String(raw).trim();
+        }
         return out;
       })
       .filter(Boolean)
@@ -188,12 +202,16 @@
     cfg.series.forEach((s) => {
       seriesHeaders[s.key] = headerLookup[normalizeHeader(s.key)];
     });
+    const conditionHeader = cfg.condition
+      ? headerLookup[normalizeHeader(cfg.condition.key)]
+      : null;
 
     const missing = [];
     if (!timeHeader) missing.push(cfg.columns.time.label);
     cfg.series.forEach((s) => {
       if (!seriesHeaders[s.key]) missing.push(s.label);
     });
+    if (cfg.condition && !conditionHeader) missing.push(cfg.condition.label);
     if (missing.length) {
       const err = new Error(
         `Sheet is missing expected column(s): ${missing.join(", ")}`
@@ -212,6 +230,10 @@
           const v = parseFloat(String(row[seriesHeaders[s.key]]).replace(/,/g, ""));
           out[s.key] = isNaN(v) ? null : v;
         });
+        if (cfg.condition) {
+          const raw = conditionHeader ? row[conditionHeader] : null;
+          out.prediction = raw === undefined || raw === null ? null : String(raw).trim();
+        }
         return out;
       })
       .filter(Boolean)
@@ -235,6 +257,24 @@
         minute: "2-digit",
       })}`;
     });
+  }
+
+  function updateCondition(rows) {
+    if (!cfg.condition || !conditionCard || !rows.length) return;
+    const latest = rows[rows.length - 1];
+    const text = latest.prediction;
+    const icons = cfg.condition.icons || {};
+    const key = normalizeHeader(text || "");
+    const iconUrl = (key && icons[key]) || icons.default || "";
+
+    conditionValue.textContent = text || "no forecast yet";
+    if (iconUrl) {
+      conditionImg.src = iconUrl;
+      conditionImg.alt = text || "forecast";
+      conditionImg.classList.remove("hidden");
+    } else {
+      conditionImg.classList.add("hidden");
+    }
   }
 
   function renderChart(rows) {
@@ -344,6 +384,7 @@
 
       setChartState(null);
       updateTiles(rows);
+      updateCondition(rows);
       renderChart(rows);
       setStatus("connected", "ok");
       updatedLine.textContent = `last updated ${new Date().toLocaleTimeString()}`;
