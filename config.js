@@ -8,7 +8,7 @@ const STATION_CONFIG = {
   //    File -> Share -> Publish to web -> select your sheet/tab -> CSV -> Publish
   //    Paste the resulting link below.
   sheetCsvUrl:
-    "https://docs.google.com/spreadsheets/d/e/2PACX-1vSiVauhiltFVeL26Mby6x8m4FWyQ40xzcdnyIhgSQh5WJTx9m7NAvc8WZ-ohe96KIWU6oQ5C8t27Jqq/pubhtml?gid=0&single=true",
+    "https://docs.google.com/spreadsheets/d/e/2PACX-1vSiVauhiltFVeL26Mby6x8m4FWyQ40xzcdnyIhgSQh5WJTx9m7NAvc8WZ-ohe96KIWU6oQ5C8t27Jqq/pub?gid=0&single=true&output=csv",
 
   // 2. How often to re-fetch the sheet, in milliseconds.
   refreshIntervalMs: 60000, // 1 minute
