@@ -118,7 +118,7 @@
     }
     const csvText = await res.text();
     const parsed = Papa.parse(csvText.trim(), {
-      header: true,
+      header: cfg.hasHeaderRow !== false,
       skipEmptyLines: true,
     });
     if (parsed.errors && parsed.errors.length) {
@@ -127,11 +127,37 @@
     return parsed.data;
   }
 
-  // Map raw sheet rows (arbitrary header casing) to a clean shape:
-  // { time: Date, temperature: number, humidity: number, ... }
+  // Map raw sheet rows to a clean shape: { time: Date, temperature: number, ... }
+  // Supports two modes, set via cfg.hasHeaderRow:
+  //  - true:  rows are objects keyed by header text (case/space-insensitive)
+  //  - false: rows are arrays, matched by column position (index)
   function normalizeRows(rawRows) {
     if (!rawRows.length) return [];
 
+    if (cfg.hasHeaderRow === false) {
+      return normalizeRowsByIndex(rawRows);
+    }
+    return normalizeRowsByHeader(rawRows);
+  }
+
+  function normalizeRowsByIndex(rawRows) {
+    const timeIndex = cfg.columns.time.index;
+    return rawRows
+      .map((row) => {
+        const time = parseTime(row[timeIndex]);
+        if (!time) return null;
+        const out = { time };
+        cfg.series.forEach((s) => {
+          const v = parseFloat(String(row[s.index] ?? "").replace(/,/g, ""));
+          out[s.key] = isNaN(v) ? null : v;
+        });
+        return out;
+      })
+      .filter(Boolean)
+      .sort((a, b) => a.time - b.time);
+  }
+
+  function normalizeRowsByHeader(rawRows) {
     const sampleHeaders = Object.keys(rawRows[0]);
     const headerLookup = {};
     sampleHeaders.forEach((h) => {
