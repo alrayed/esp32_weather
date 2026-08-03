@@ -238,7 +238,14 @@
   }
 
   function renderChart(rows) {
-    const labels = rows.map((r) => r.time);
+    const labels = rows.map((r) =>
+      r.time.toLocaleString([], {
+        month: "short",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      })
+    );
 
     const datasets = cfg.series.map((s) => ({
       key: s.key,
@@ -284,10 +291,13 @@
         },
         scales: {
           x: {
-            type: "time",
-            time: { tooltipFormat: "MMM d, HH:mm" },
             grid: { color: "#1e2c3d", drawTicks: false },
-            ticks: { color: "#7c8ca1", font: { family: "JetBrains Mono", size: 10 }, maxRotation: 0 },
+            ticks: {
+              color: "#7c8ca1",
+              font: { family: "JetBrains Mono", size: 10 },
+              maxRotation: 0,
+              autoSkip: true,
+            },
             border: { color: "#1e2c3d" },
           },
           yLeft: {
