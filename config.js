@@ -1,8 +1,3 @@
-// ============================================================
-// STATION CONFIG
-// This is the only file you need to touch to connect your sheet.
-// ============================================================
-
 const STATION_CONFIG = {
   // 1. Publish your Google Sheet as CSV:
   //    File -> Share -> Publish to web -> select your sheet/tab -> CSV -> Publish
@@ -12,6 +7,11 @@ const STATION_CONFIG = {
 
   // 2. How often to re-fetch the sheet, in milliseconds.
   refreshIntervalMs: 60000, // 1 minute
+
+  // 3. Limit how many of the most recent rows to plot. Useful if your
+  //    sheet has grown large and you only care about recent readings
+  //    (also keeps the page fast). Set to null to use all rows.
+  maxDataPoints: 10,
 
   // 3. Does row 1 of your sheet contain header labels (e.g. "time",
   //    "temperature"...)? If your sheet starts straight into data
