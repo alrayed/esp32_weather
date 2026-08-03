@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Weather Station Readout</title>
+  <meta name="description" content="Live weather readings pulled from a Google Sheet." />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="wrap">
+    <header class="header">
+      <div class="station-id">
+        <span class="station-dot live" id="liveDot"></span>
+        <h1>Weather Station Readout</h1>
+      </div>
+      <div class="station-meta">
+        <div id="statusLine">connecting to sheet…</div>
+        <div id="updatedLine">last updated —</div>
+      </div>
+    </header>
+
+    <section class="tiles" id="tiles">
+      <!-- tiles injected by app.js, one per series in config.js -->
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <h2>Readings over time</h2>
+        <div class="legend" id="legend">
+          <!-- legend buttons injected by app.js -->
+        </div>
+      </div>
+      <div class="chart-area">
+        <canvas id="chart"></canvas>
+        <div class="chart-state" id="chartState">
+          <span>Loading data…</span>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <span>Data source: Google Sheets (published CSV)</span>
+      <span id="refreshLine">refreshing every 60s</span>
+    </footer>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-adapter-date-fns/3.0.0/chartjs-adapter-date-fns.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
