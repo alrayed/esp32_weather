@@ -86,9 +86,9 @@ const STATION_CONFIG = {
     // },
   ],
 
-  // 6. Forecast / prediction column. This is TEXT (e.g. "Sunny", "Rain"),
+  // 6. Forecast / prediction column. This is TEXT (e.g. "Clear", "Rain"),
   //    not a number, so it isn't charted — instead it's shown as its own
-  //    card with an image/gif next to the latest word from your sheet.
+  //    card with an icon next to the latest word from your sheet.
   //    Set to null to turn this card off entirely.
   condition: {
     index: 5, // column F
@@ -96,20 +96,15 @@ const STATION_CONFIG = {
     label: "Forecast",
 
     // Map the exact text your sheet cell contains (case-insensitive,
-    // spaces ignored) to an image/gif URL. Add as many rows as you like.
-    // "default" is used whenever the sheet text doesn't match anything below
-    // (e.g. a typo, or a word you haven't mapped yet).
+    // spaces ignored) to an emoji icon. These 4 match the labels your
+    // ESP32's weatherModel.predict() outputs: Clear, Cloudy, Rain, Snow.
+    // "default" is used if the sheet ever has a word not listed here.
     icons: {
-      sunny: "https://media.giphy.com/media/xTiTnxpQ3ghPiB2Hp6/giphy.gif",
-      clear: "https://media.giphy.com/media/xTiTnxpQ3ghPiB2Hp6/giphy.gif",
-      cloudy: "https://media.giphy.com/media/3o7qDEq2bMbcbPRQ2c/giphy.gif",
-      overcast: "https://media.giphy.com/media/3o7qDEq2bMbcbPRQ2c/giphy.gif",
-      rain: "https://media.giphy.com/media/3o6Zt6ML6BklcajjsA/giphy.gif",
-      rainy: "https://media.giphy.com/media/3o6Zt6ML6BklcajjsA/giphy.gif",
-      storm: "https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif",
-      thunderstorm: "https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif",
-      snow: "https://media.giphy.com/media/l0MYB8Ory7Hqefo9a/giphy.gif",
-      default: "https://media.giphy.com/media/3o7qDEq2bMbcbPRQ2c/giphy.gif",
+      clear: "☀️",
+      cloudy: "☁️",
+      rain: "🌧️",
+      snow: "❄️",
+      default: "❔",
     },
   },
 };
