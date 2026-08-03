@@ -3,7 +3,7 @@ const STATION_CONFIG = {
   //    File -> Share -> Publish to web -> select your sheet/tab -> CSV -> Publish
   //    Paste the resulting link below.
   sheetCsvUrl:
-    "https://docs.google.com/spreadsheets/d/e/2PACX-1vSiVauhiltFVeL26Mby6x8m4FWyQ40xzcdnyIhgSQh5WJTx9m7NAvc8WZ-ohe96KIWU6oQ5C8t27Jqq/pub?gid=0&single=true&output=csv",
+    "https://docs.google.com/spreadsheets/d/e/2PACX-1vSCn342rfC-ljICIJPuuQHuSSI2GzRuCwFuaHa0X-MPJHo5e6Zq1K0u81f2lagRCanc1K-Z0Pwz1al3/pub?gid=0&single=true&output=csv",
 
   // 2. How often to re-fetch the sheet, in milliseconds.
   refreshIntervalMs: 60000, // 1 minute
@@ -77,7 +77,7 @@ const STATION_CONFIG = {
     // --- Add future readings here, e.g. ---
     // {
     //   key: "wind_speed",
-    //   index: 5, // column F
+    //   index: 6, // column G
     //   label: "Wind Speed",
     //   unit: "km/h",
     //   color: "var(--c-wind)",
@@ -85,4 +85,31 @@ const STATION_CONFIG = {
     //   decimals: 1,
     // },
   ],
+
+  // 6. Forecast / prediction column. This is TEXT (e.g. "Sunny", "Rain"),
+  //    not a number, so it isn't charted — instead it's shown as its own
+  //    card with an image/gif next to the latest word from your sheet.
+  //    Set to null to turn this card off entirely.
+  condition: {
+    index: 5, // column F
+    key: "prediction", // used if hasHeaderRow: true
+    label: "Forecast",
+
+    // Map the exact text your sheet cell contains (case-insensitive,
+    // spaces ignored) to an image/gif URL. Add as many rows as you like.
+    // "default" is used whenever the sheet text doesn't match anything below
+    // (e.g. a typo, or a word you haven't mapped yet).
+    icons: {
+      sunny: "https://media.giphy.com/media/xTiTnxpQ3ghPiB2Hp6/giphy.gif",
+      clear: "https://media.giphy.com/media/xTiTnxpQ3ghPiB2Hp6/giphy.gif",
+      cloudy: "https://media.giphy.com/media/3o7qDEq2bMbcbPRQ2c/giphy.gif",
+      overcast: "https://media.giphy.com/media/3o7qDEq2bMbcbPRQ2c/giphy.gif",
+      rain: "https://media.giphy.com/media/3o6Zt6ML6BklcajjsA/giphy.gif",
+      rainy: "https://media.giphy.com/media/3o6Zt6ML6BklcajjsA/giphy.gif",
+      storm: "https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif",
+      thunderstorm: "https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif",
+      snow: "https://media.giphy.com/media/l0MYB8Ory7Hqefo9a/giphy.gif",
+      default: "https://media.giphy.com/media/3o7qDEq2bMbcbPRQ2c/giphy.gif",
+    },
+  },
 };
