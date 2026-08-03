@@ -219,6 +219,14 @@ body {
   display: none;
 }
 
+.condition-icon {
+  font-size: 44px;
+  line-height: 1;
+  flex-shrink: 0;
+  width: 56px;
+  text-align: center;
+}
+
 .condition-label {
   font-family: var(--font-mono);
   font-size: 11px;
@@ -230,8 +238,9 @@ body {
 
 .condition-value {
   font-family: var(--font-display);
-  font-size: 20px;
+  font-size: 26px;
   font-weight: 600;
+  letter-spacing: 0.01em;
 }
 
 /* ---------- Chart panel ---------- */
