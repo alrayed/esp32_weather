@@ -14,7 +14,7 @@
   const liveDot = document.getElementById("liveDot");
   const canvas = document.getElementById("chart");
   const conditionCard = document.getElementById("conditionCard");
-  const conditionImg = document.getElementById("conditionImg");
+  const conditionIcon = document.getElementById("conditionIcon");
   const conditionLabel = document.getElementById("conditionLabel");
   const conditionValue = document.getElementById("conditionValue");
 
@@ -265,16 +265,10 @@
     const text = latest.prediction;
     const icons = cfg.condition.icons || {};
     const key = normalizeHeader(text || "");
-    const iconUrl = (key && icons[key]) || icons.default || "";
+    const icon = (key && icons[key]) || icons.default || "";
 
     conditionValue.textContent = text || "no forecast yet";
-    if (iconUrl) {
-      conditionImg.src = iconUrl;
-      conditionImg.alt = text || "forecast";
-      conditionImg.classList.remove("hidden");
-    } else {
-      conditionImg.classList.add("hidden");
-    }
+    conditionIcon.textContent = icon;
   }
 
   function renderChart(rows) {
