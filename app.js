@@ -44,19 +44,38 @@
     }
   }
 
-  // Try to parse a wide range of time formats into a Date.
+  // Try a wide range of time formats into a Date. Google Sheets' published
+  // CSV can render date/time cells in several different text shapes
+  // depending on locale/format, so we try several strategies.
   function parseTime(raw) {
-    if (!raw) return null;
+    if (raw === null || raw === undefined || raw === "") return null;
     const s = String(raw).trim();
-    const asDate = new Date(s);
-    if (!isNaN(asDate.getTime())) return asDate;
-    // Fall back: treat as a plain label (e.g. "14:30") — use today as the date part
-    const today = new Date();
+
+    // 1. Direct parse (handles ISO, "2026-08-03 11:57:34", many others)
+    let d = new Date(s);
+    if (!isNaN(d.getTime())) return d;
+
+    // 2. Comma between date and time, e.g. "8/3/2026, 11:57:34"
+    d = new Date(s.replace(",", ""));
+    if (!isNaN(d.getTime())) return d;
+
+    // 3. Dot-separated date, e.g. "03.08.2026 11:57:34"
+    d = new Date(s.replace(/(\d{1,2})\.(\d{1,2})\.(\d{4})/, "$3-$2-$1"));
+    if (!isNaN(d.getTime())) return d;
+
+    // 4. Slash date with dashes swapped, e.g. "2026/08/03 11:57:34"
+    d = new Date(s.replace(/\//g, "-"));
+    if (!isNaN(d.getTime())) return d;
+
+    // 5. Bare "HH:MM" or "HH:MM:SS" label — use today as the date part
     const m = s.match(/^(\d{1,2}):(\d{2})(:(\d{2}))?$/);
     if (m) {
+      const today = new Date();
       today.setHours(Number(m[1]), Number(m[2]), Number(m[4] || 0), 0);
       return today;
     }
+
+    console.warn("[weather-dashboard] Could not parse time value:", JSON.stringify(raw));
     return null;
   }
 
@@ -306,7 +325,7 @@
 
       if (!rows.length) {
         setChartState(
-          `<span>Sheet connected, but no valid rows were found yet.<br/>Add a row with a time and readings to see the graph.</span>`
+          `<span>Sheet connected, but no valid rows were found yet.<br/>Open your browser's console (F12 → Console tab) to see the exact raw time value that couldn't be parsed.<br/>Add a row with a time and readings to see the graph.</span>`
         );
         setStatus("connected — waiting for data", "ok");
         return;
