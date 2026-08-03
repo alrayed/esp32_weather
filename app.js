@@ -238,14 +238,11 @@
   }
 
   function renderChart(rows) {
-    const labels = rows.map((r) =>
-      r.time.toLocaleString([], {
-        month: "short",
-        day: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-      })
-    );
+    const latestTime = rows[rows.length - 1].time;
+    const labels = rows.map((r) => {
+      const minutesAgo = Math.round((latestTime - r.time) / 60000);
+      return minutesAgo <= 0 ? "now" : `${minutesAgo}m ago`;
+    });
 
     const datasets = cfg.series.map((s) => ({
       key: s.key,
@@ -353,15 +350,27 @@
     } catch (err) {
       console.error(err);
       setStatus("connection error", "err");
+      const isNetworkish =
+        err instanceof TypeError || /HTTP \d/.test(err.message || "");
+
       if (err.code === "MISSING_COLUMNS") {
         setChartState(
           `<span>${err.message}.<br/>Check that your sheet's header row matches the keys in <code>config.js</code>.<br/>Found headers: ${err.found.join(
             ", "
           )}</span>`
         );
-      } else {
+      } else if (isNetworkish) {
         setChartState(
           `<span>Couldn't load the sheet.<br/>Make sure it's published to the web as CSV and the URL in <code>config.js</code> is correct.<br/><a href="https://support.google.com/docs/answer/183965" target="_blank" rel="noopener">How to publish a Google Sheet as CSV</a></span>`
+        );
+      } else {
+        // Not a network/column problem — the sheet loaded fine, something
+        // failed afterwards (e.g. while drawing the chart). Show the real
+        // error so it's obvious what broke, without needing devtools.
+        setChartState(
+          `<span>Data loaded, but something failed while rendering the chart:<br/><code>${(
+            err.message || String(err)
+          ).replace(/</g, "&lt;")}</code></span>`
         );
       }
     }
